@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://delv2dem8amyp"]
+
+[ext_resource type="FontFile" uid="uid://5erm4ume5t2h" path="res://fonts/cmu-typewriter/Typewriter.tres" id="1_bjian"]
+
+[resource]
+default_font = ExtResource("1_bjian")
