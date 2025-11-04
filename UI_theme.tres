@@ -1,9 +1,0 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dct75qgw1yn3m"]
-
-[ext_resource type="FontFile" uid="uid://cwxn8ccuwpnhl" path="res://fonts/droid-sans/DroidSans.ttf" id="1_6w50i"]
-
-[resource]
-Button/fonts/font = ExtResource("1_6w50i")
-CheckBox/fonts/font = ExtResource("1_6w50i")
-CheckButton/fonts/font = ExtResource("1_6w50i")
-Label/fonts/font = ExtResource("1_6w50i")
