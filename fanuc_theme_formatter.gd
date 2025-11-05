@@ -12,7 +12,7 @@ const FANUC_BORDER_COLOR = Color(0.4, 0.4, 0.4, 1.0)  # Grigio scuro per bordi
 
 func _run():
 	# Carica o crea il theme
-	var theme_path = "res://tu_theme.tres"  # MODIFICA QUESTO PERCORSO
+	var theme_path = "res://Varie/GIU_theme_1.tres"  # MODIFICA QUESTO PERCORSO
 	var theme: Theme
 	
 	if ResourceLoader.exists(theme_path):
