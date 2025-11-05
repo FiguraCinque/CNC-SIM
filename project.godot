@@ -14,7 +14,7 @@ config/name="SIMULATORE CNC STRUTTURE DATI GIT"
 run/main_scene="uid://dyb0knu8gwhcv"
 config/features=PackedStringArray("4.5", "Forward Plus")
 boot_splash/show_image=false
-config/icon="res://icon.svg"
+config/icon="res://Varie/icon.svg"
 
 [autoload]
 
