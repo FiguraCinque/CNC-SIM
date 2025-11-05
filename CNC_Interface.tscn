@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://dyb0knu8gwhcv"]
 
 [ext_resource type="Script" uid="uid://cd3emp71kniop" path="res://CNC_Interface.gd" id="1_2hfcp"]
-[ext_resource type="Script" uid="uid://6xmstcx52dee" path="res://edit_value_dialog.gd" id="2_aysmk"]
-[ext_resource type="Script" uid="uid://uta3h4xdbg7t" path="res://create_program_dialog.gd" id="3_1jvqu"]
-[ext_resource type="Script" uid="uid://r0uvn8270sir" path="res://rename_program_dialog.gd" id="4_qgth4"]
-[ext_resource type="Script" uid="uid://hydvbjjgbr1o" path="res://delete_confirm_dialog.gd" id="5_1rr8u"]
+[ext_resource type="Script" uid="uid://6xmstcx52dee" path="res://Script Secondari/edit_value_dialog.gd" id="2_aysmk"]
+[ext_resource type="Script" uid="uid://uta3h4xdbg7t" path="res://Script Secondari/create_program_dialog.gd" id="3_1jvqu"]
+[ext_resource type="Script" uid="uid://r0uvn8270sir" path="res://Script Secondari/rename_program_dialog.gd" id="4_qgth4"]
+[ext_resource type="Script" uid="uid://hydvbjjgbr1o" path="res://Script Secondari/delete_confirm_dialog.gd" id="5_1rr8u"]
 
 [node name="CNC_Interface" type="Control"]
 layout_mode = 3
