@@ -19,3 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 CncMemory="*res://CNCMemory.gd"
+
+[gui]
+
+theme/custom="uid://cxyclyjh4bwkk"

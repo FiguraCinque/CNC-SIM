@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cxyclyjh4bwkk"]
+
+[ext_resource type="FontFile" path="res://fonts/xolonium/Xolonium.tres" id="1_isnsk"]
+
+[resource]
+default_font = ExtResource("1_isnsk")
