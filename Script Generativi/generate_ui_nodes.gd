@@ -1,6 +1,8 @@
 # generate_ui_nodes.gd
 # SCRIPT @tool USA E GETTA - Esegui dall'editor, poi elimina
+
 #@tool
+
 extends EditorScript
 
 func _run() -> void:

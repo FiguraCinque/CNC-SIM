@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CustomThemeEditor" load_steps=3 format=3 uid="uid://dbt5e0aiudaag"]
+
+[ext_resource type="Theme" uid="uid://cxyclyjh4bwkk" path="res://Varie/GIU_theme_1.tres" id="1_lck75"]
+[ext_resource type="Script" uid="uid://lidhrfixhgah" path="res://Script Secondari/custom_theme_editor.gd" id="1_pk5b8"]
+
+[resource]
+script = ExtResource("1_pk5b8")
+base_theme = ExtResource("1_lck75")
+metadata/_custom_type_script = "uid://lidhrfixhgah"

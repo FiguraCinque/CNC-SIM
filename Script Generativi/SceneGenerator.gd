@@ -2,7 +2,9 @@
 # SCRIPT PER USO SINGOLO (TOOL SCRIPT)
 # Eseguire questo script dall'editor di Godot (Click destro -> Run)
 # per generare programmaticamente la scena dell'interfaccia CNC.
-@tool
+
+#@tool
+
 extends EditorScript
 
 func _run() -> void:
