@@ -299,7 +299,7 @@ func _populate_programs() -> void:
 		program_list.add_item(nameP)
 		if nameP == CncMemory.active_program_name:
 			var last_idx = program_list.get_item_count() - 1
-			program_list.set_item_custom_fg_color(last_idx, Color.YELLOW)
+			program_list.set_item_custom_fg_color(last_idx, Color.BLUE)
 	
 	# Se il programma visualizzato non esiste più, pulisci la vista
 	if previously_displayed_program != "" and not CncMemory.programs.has(previously_displayed_program):
