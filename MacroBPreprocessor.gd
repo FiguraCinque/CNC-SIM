@@ -205,7 +205,9 @@ static func _resolve_all_variables(text: String) -> Dictionary:
 # =========================================================================
 
 static func _evaluate_all_expressions(text: String) -> Dictionary:
-	"""Valuta tutte le espressioni [...] nel testo."""
+	"""
+	Valuta tutte le espressioni [...] nel testo, gestendo annidamenti multipli.
+	"""
 	var result = {
 		"success": true,
 		"result": text,
@@ -213,45 +215,52 @@ static func _evaluate_all_expressions(text: String) -> Dictionary:
 	}
 	
 	var processed = text
-	var depth = 0
+	var iterations = 0
 	
 	# Continua finché ci sono parentesi quadre
-	while "[" in processed and "]" in processed:
-		depth += 1
-		if depth > MAX_NESTING_DEPTH:
+	while "[" in processed:
+		iterations += 1
+		if iterations > MAX_NESTING_DEPTH * 10:  # Safeguard
 			result.success = false
-			result.error = "Annidamento espressioni troppo profondo (max " + str(MAX_NESTING_DEPTH) + ")"
+			result.error = "Troppe iterazioni nella valutazione espressioni"
 			return result
 		
-		# Trova l'espressione più interna (nessun [ dentro)
+		# Debug: mostra lo stato corrente
+		# print("  Iterazione ", iterations, ": ", processed)
+		
+		# Trova l'espressione più interna
 		var inner_expr = _find_innermost_expression(processed)
-		if inner_expr["found"]:
-			var expr_value = _evaluate_expression(inner_expr["content"])
-			if expr_value["success"]:
-				# Sostituisci l'espressione con il risultato
-				processed = processed.substr(0, inner_expr["start"]) + \
-						   str(expr_value["value"]) + \
-						   processed.substr(inner_expr["end"] + 1)
-			else:
-				result.success = false
-				result.error = expr_value["error"]
-				return result
-		else:
+		if not inner_expr["found"]:
 			result.success = false
 			result.error = "Parentesi quadre non bilanciate"
 			return result
+		
+		# Valuta l'espressione
+		var expr_value = _evaluate_expression(inner_expr["content"])
+		if not expr_value["success"]:
+			result.success = false
+			result.error = "Errore in espressione '" + inner_expr["content"] + "': " + expr_value["error"]
+			return result
+		
+		# Sostituisci l'espressione con il risultato
+		var before = processed.substr(0, inner_expr["start"])
+		var after = processed.substr(inner_expr["end"] + 1)
+		processed = before + str(expr_value["value"]) + after
 	
-	# Verifica che non ci siano parentesi rimaste
-	if "[" in processed or "]" in processed:
+	# Verifica finale che non ci siano parentesi rimaste
+	if "]" in processed:
 		result.success = false
-		result.error = "Parentesi quadre non bilanciate nel testo"
+		result.error = "Parentesi quadre ] senza corrispondente ["
 		return result
 	
 	result.result = processed
 	return result
 
 static func _find_innermost_expression(text: String) -> Dictionary:
-	"""Trova l'espressione più interna (senza [ al suo interno)."""
+	"""
+	Trova l'espressione più interna (quella che si può valutare senza dover 
+	prima risolvere altre espressioni al suo interno).
+	"""
 	var result = {
 		"found": false,
 		"start": -1,
@@ -259,29 +268,22 @@ static func _find_innermost_expression(text: String) -> Dictionary:
 		"content": ""
 	}
 	
-	var depth = 0
-	var start_pos = -1
+	# Trova l'ultima [ (la più interna)
+	var last_open = text.rfind("[")
+	if last_open == -1:
+		return result
 	
-	for i in range(text.length()):
-		var character = text[i]
-		
-		if character == "[":
-			if depth == 0:
-				start_pos = i
-			depth += 1
-		elif character == "]":
-			depth -= 1
-			if depth == 0 and start_pos >= 0:
-				# Trovata un'espressione completa
-				var content = text.substr(start_pos + 1, i - start_pos - 1)
-				# Verifica che non contenga altre [
-				if not "[" in content:
-					result.found = true
-					result.start = start_pos
-					result.end = i
-					result.content = content
-					return result
-				start_pos = -1
+	# Trova la prima ] dopo questa [
+	var close_pos = text.find("]", last_open)
+	if close_pos == -1:
+		return result
+	
+	# L'espressione tra queste due parentesi non può contenere altre [ o ]
+	# per definizione (abbiamo preso l'ultima [)
+	result.found = true
+	result.start = last_open
+	result.end = close_pos
+	result.content = text.substr(last_open + 1, close_pos - last_open - 1)
 	
 	return result
 
@@ -340,10 +342,14 @@ static func test_preprocessing() -> void:
 	var test_cases = [
 		"G01 X100 Y200 F300",  # G-code puro
 		"G#810 X#811 Y#812",   # Variabili semplici
-		"X[[#811-#810]/2]",     # Espressione semplice
-		"/G91 G3 X[-[[#811-#810]/2]] I[-[[#811-#810]/4]] Z[#812/4] F[#820*1.25]",  # Annidamento complesso
+		"X[[#811-#810]/2]",     # Espressione annidanta doppia
+		"X[[[#811-#810]/2]+0.06]",  # Triplo annidamento
+		"/G91 G3 X[-[[#811-#810]/2]] I[-[[#811-#810]/4]] Z[#812/4] F[#820*1.25]",  # Annidamento complesso con negazione
 		"/G3 X[[[#811-#810]/2]+0.06] I[[[#811-#810]/4]+0.03] Z[#812/4] F[#820*1.25]",  # Multi-annidamento
 		"#500 = [[1000*50]/[3.14*15]]",  # Assegnazione con calcolo
+		"#501 = 502",  # Assegnazione con calcolo
+		"#[#501] = 503",  # Assegnazione con calcolo
+		"#[#502] = 504",  # Assegnazione con calcolo
 		"(Questo è un commento) G01 X100 (altro commento) Y200"  # Con commenti
 	]
 	
@@ -354,4 +360,19 @@ static func test_preprocessing() -> void:
 			print("Output: ", result["result"])
 		else:
 			print("ERRORE: ", result["error"])
+		if not result.get("warnings", []).is_empty():
+			print("AVVISI: ", result["warnings"])
 		print("---")
+	
+	# Test specifico per vedere il processo step-by-step
+	print("\n=== TEST DETTAGLIATO ANNIDAMENTO ===")
+	var test_expr = "X[[[#811-#810]/2]+0.06]"
+	print("Espressione: ", test_expr)
+	
+	# Prima risolvi le variabili
+	var step1 = _resolve_all_variables(test_expr)
+	print("Dopo risoluzione variabili: ", step1["result"])
+	
+	# Poi valuta le espressioni
+	var step2 = _evaluate_all_expressions(step1["result"])
+	print("Dopo valutazione espressioni: ", step2["result"])
