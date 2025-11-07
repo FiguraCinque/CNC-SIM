@@ -85,6 +85,7 @@ func _ready() -> void:
 	# Connessione dei segnali
 	_connect_signals()
 	MacroBPreprocessor.test_preprocessing()
+	MacroBPreprocessor.test_preprocessing2()
 
 func _input(event: InputEvent) -> void:
 	"""
