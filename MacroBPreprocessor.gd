@@ -227,14 +227,14 @@ static func test_preprocessing() -> void:
 	CncMemory.set_variable("#820", 200.0)
 	
 	var test_cases = [
-		"G01 X100 Y200 F300",  # G-code puro
-		"G#810 X#811 Y#812",   # Variabili semplici
+		"G01 X100 Y200 F300 (COMMENTO)",  # G-code puro
+		"(COMMENTO)G#810 X#811 Y#812",   # Variabili semplici
 		"X[[#811-#810]/2]",     # Espressione annidanta doppia
 		"X[[[#811-#810]/2]+0.06]",  # Triplo annidamento
 		"/G91 G3 X[-[[#811-#810]/2]] I[-[[#811-#810]/4]] Z[#812/4] F[#820*1.25]",  # Annidamento complesso con negazione
 		"/G3 X[[[#811-#810]/2]+0.06] I[[[#811-#810]/4]+0.03] Z[#812/4] F[#820*1.25]",  # Multi-annidamento
-		"#500 = [[1000*50]/[3.14*15]]",  # Assegnazione con calcolo
-		"#501 = 502",  # Assegnazione con calcolo
+		"(COMMENTO)#500 = [[1000*50]/[3.14*15]]",  # Assegnazione con calcolo
+		"#501 = 502(COMMENTO)",  # Assegnazione con calcolo
 		"#[#501] = 503",  # Assegnazione con calcolo
 		"#[#502] = 504",  # Assegnazione con calcolo
 		"(Questo è un commento) G01 X100 (altro commento) Y200"  # Con commenti
@@ -589,12 +589,12 @@ static func test_preprocessing2() -> void:
 	CncMemory.set_variable("#13015", 7.5)  # 13000 + 15
 	
 	var test_cases = [
-		"#501 = 502",                    # Assegnazione semplice
-		"#[#501] = 200",                  # Assegnazione a var calcolata (#502 = 200)
-		"#[501+50] = 300",                # Assegnazione con calcolo indice
-		"#[#501+50] = 400",               # Mix: variabile + calcolo
-		"G01 X#[#501] Y#[501+50]",       # Uso in G-code
-		"#810 = [#[13000+#599]*2]"       # Annidamento complesso
+		"/#501 = 502 (COMMENTO)",                    # Assegnazione semplice
+		"/#[#501] = 200 (COMMENTO)",                  # Assegnazione a var calcolata (#502 = 200)
+		"/(COMMENTO)#[501+50] = 300",                # Assegnazione con calcolo indice
+		"/#[#501+50] = 400",               # Mix: variabile + calcolo
+		"/G01 X#[#501] Y#[501+50]",       # Uso in G-code
+		"/#810 = [#[13000+#599]*2]"       # Annidamento complesso
 	]
 	
 	for test_line in test_cases:
